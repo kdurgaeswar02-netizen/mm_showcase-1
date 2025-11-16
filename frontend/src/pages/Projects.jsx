@@ -1,23 +1,82 @@
-import React, { useState, useEffect } from 'react';
-import API from '../api/api';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
-export default function Projects(){
-  const [projects, setProjects] = useState([]);
-  useEffect(()=>{ API.get('/projects').then(r=>setProjects(r.data)).catch(()=>{}); },[]);
+// Dummy Data
+const dummyProjects = [
+    { _id: '1', title: 'Luxe Apartment', category: 'Residential', city: 'Mumbai', images: ['/placeholder-5.jpg'] },
+    { _id: '2', title: 'Modern Office', category: 'Commercial', city: 'Delhi', images: ['/placeholder-6.jpg'] },
+    { _id: '3', title: 'Minimalist Cafe', category: 'Hospitality', city: 'Bangalore', images: ['/placeholder-7.jpg'] },
+    { _id: '4', title: 'Suburban Villa', category: 'Residential', city: 'Pune', images: ['/placeholder-8.jpg'] },
+    { _id: '5', title: 'Tech Startup Hub', category: 'Commercial', city: 'Hyderabad', images: ['/placeholder-9.jpg'] },
+    { _id: '6', title: 'Cozy Restaurant', category: 'Hospitality', city: 'Chennai', images: ['/placeholder-10.jpg'] },
+];
+
+const categories = ['All', 'Residential', 'Commercial', 'Hospitality'];
+
+const Projects = () => {
+  const [filteredProjects, setFilteredProjects] = useState(dummyProjects);
+  const [activeFilter, setActiveFilter] = useState('All');
+
+  const handleFilter = (category) => {
+    setActiveFilter(category);
+    if (category === 'All') {
+      setFilteredProjects(dummyProjects);
+    } else {
+      setFilteredProjects(dummyProjects.filter(p => p.category === category));
+    }
+  };
+
   return (
-    <div className="container" style={{padding:'28px 0'}}>
-      <h2>Projects</h2>
-      <div className="grid cols-3" style={{marginTop:12}}>
-        {projects.map(p => (
-          <div key={p._id} className="card">
-            <h3>{p.title}</h3>
-            <p style={{color:'#666'}}>{p.category} • {p.city}</p>
-            {p.images && p.images[0] && <img src={`http://localhost:5000${p.images[0]}`} style={{width:'100%',borderRadius:6}} alt="" />}
-            <Link to={`/projects/${p._id}`}>Details</Link>
-          </div>
+    <div className="container mx-auto px-6 py-12 animate-fade-in">
+      <motion.div initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }}>
+        <h1 className="text-5xl font-bold font-display text-center text-primary mb-4">Our Portfolio</h1>
+        <p className="text-lg text-gray-600 text-center max-w-2xl mx-auto mb-12 font-serif">A glimpse into the spaces we've transformed. Each project is a testament to our commitment to quality and aesthetic excellence.</p>
+      </motion.div>
+
+      <div className="flex justify-center space-x-2 md:space-x-4 mb-12">
+        {categories.map(category => (
+          <button 
+            key={category} 
+            onClick={() => handleFilter(category)} 
+            className={`px-4 py-2 md:px-6 md:py-2.5 text-sm md:text-base font-semibold rounded-full transition-all duration-300 ${
+                activeFilter === category 
+                ? 'bg-primary text-white shadow-md' 
+                : 'bg-white text-gray-700 hover:bg-accent'
+            }`}>
+            {category}
+          </button>
         ))}
       </div>
+
+      <motion.div 
+        layout
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filteredProjects.map((project) => (
+            <motion.div
+              key={project._id}
+              layout
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.4 }}
+              className="group relative overflow-hidden rounded-xl shadow-lg bg-white cursor-pointer">
+              <img src={project.images[0]} alt={project.title} className="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-500 ease-in-out"/>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent p-6 flex flex-col justify-end">
+                <motion.div 
+                  initial={{ y: 20, opacity: 0}} 
+                  className="transform group-hover:translate-y-0 group-hover:opacity-100 opacity-0 transition-all duration-500">
+                  <h3 className="text-2xl font-bold text-white font-serif">{project.title}</h3>
+                  <p className="text-accent text-sm">{project.category} &bull; {project.city}</p>
+                </motion.div>
+                 <div className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm text-primary p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 text-xs font-bold">VIEW</div>
+              </div>
+              <Link to={`/projects/${project._id}`} className="absolute inset-0"/>
+            </motion.div>
+          ))}
+      </motion.div>
     </div>
   );
-}
+};
+
+export default Projects;
