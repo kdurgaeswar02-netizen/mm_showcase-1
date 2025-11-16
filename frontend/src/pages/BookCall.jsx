@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Phone, Mail, MapPin } from 'lucide-react';
+import api from '../api/api';
 
 const BookCall = () => {
   const [form, setForm] = useState({ name: '', phone: '', email: '', message: '' });
@@ -10,19 +11,16 @@ const BookCall = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus('sending');
-    // Placeholder for API call
-    setTimeout(() => {
-      // Simulate success/error
-      if (form.name && form.phone) {
-        setStatus('success');
-        setForm({ name: '', phone: '', email: '', message: '' });
-      } else {
-        setStatus('error');
-      }
-    }, 1500);
+    try {
+      await api.post('/calls', form);
+      setStatus('success');
+      setForm({ name: '', phone: '', email: '', message: '' });
+    } catch (error) {
+      setStatus('error');
+    }
   };
 
   return (

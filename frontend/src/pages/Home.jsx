@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, ChevronLeft, ChevronRight, Zap, Award, Shield } from 'lucide-react';
+import RecentReviews from '../components/RecentReviews';
 
 // Mock data - replace with API calls
 const projects = [
@@ -48,24 +49,24 @@ const Home = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
-        className="min-h-[90vh] flex items-center bg-cover bg-center bg-no-repeat relative"
-        style={{backgroundImage: "url('/banner.jpg')"}}
+        className="min-h-[70vh] flex items-center bg-cover bg-center bg-no-repeat relative"
+        style={{backgroundImage: "url('/banner.png')"}}
       >
          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-        <div className="container mx-auto px-6 text-left z-10">
+        <div className="container mx-auto px-6 text-right z-10">
           <motion.h1 
             initial={{y: 20, opacity: 0}} animate={{y: 0, opacity: 1}} transition={{delay: 0.2, duration: 0.5}}
-            className="text-5xl md:text-7xl font-bold font-display text-white leading-tight mb-4 max-w-2xl">
+            className="text-5xl md:text-7xl font-bold font-display text-white leading-tight mb-4 max-w-2xl ml-auto">
             Designing Dreams, Building Reality
           </motion.h1>
           <motion.p 
             initial={{y: 20, opacity: 0}} animate={{y: 0, opacity: 1}} transition={{delay: 0.4, duration: 0.5}}
-            className="text-lg md:text-xl text-gray-200 max-w-2xl mb-8 font-serif">
+            className="text-lg md:text-xl text-gray-200 max-w-2xl mb-8 font-serif ml-auto">
             Premium aluminum interiors for modern living. From bespoke kitchens to elegant office partitions, we bring your vision to life with precision and style.
           </motion.p>
           <motion.div 
             initial={{y: 20, opacity: 0}} animate={{y: 0, opacity: 1}} transition={{delay: 0.6, duration: 0.5}}
-            className="flex flex-col sm:flex-row justify-start items-start sm:items-center gap-4">
+            className="flex flex-col sm:flex-row justify-end items-end sm:items-center gap-4">
             <Link to="/showroom">
               <button className="bg-primary text-white px-8 py-3 rounded-md font-semibold hover:scale-105 transition-transform duration-300 flex items-center gap-2 text-lg shadow-lg">
                 Explore Showroom <ArrowRight size={20}/>
@@ -88,36 +89,36 @@ const Home = () => {
                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
                     <div>
                         <h2 className="text-4xl font-bold font-display text-primary">Our Recent Work</h2>
-                        <p className="text-gray-600 mt-2 font-serif max-w-lg">A glimpse into the quality and craftsmanship we bring to every project. Each one a testament to our commitment to excellence.</p>
+                        <p className="text-gray-600 mt-2 font-serif max-w-lg">A glimpse into our commitment to quality and craftsmanship.</p>
                     </div>
                     <Link to="/projects" className="mt-4 md:mt-0 flex-shrink-0">
-                        <button className="bg-primary text-white px-6 py-3 rounded-md font-semibold hover:bg-primary/90 transition-all duration-300 flex items-center gap-2 shadow-md">
-                            View Full Portfolio <ArrowRight size={20}/>
+                        <button className="bg-primary text-white px-8 py-4 rounded-md font-semibold hover:bg-primary/90 transition-all duration-300 flex items-center gap-2 shadow-md text-lg">
+                            View All Projects <ArrowRight size={22}/>
                         </button>
                     </Link>
                 </div>
 
                 <div className="relative">
-                    <div ref={scrollRef} className="flex overflow-x-auto gap-8 pb-8 scroll-smooth scrollbar-hide -mx-6 px-6">
+                    <div ref={scrollRef} className="flex overflow-x-auto gap-6 pb-8 scroll-smooth scrollbar-hide -mx-6 px-6">
                         {projects.map((project, i) => (
                             <motion.div 
                             key={project._id} 
                             initial={{opacity: 0, y: 30}} whileInView={{opacity: 1, y: 0}} viewport={{ once: true }} transition={{delay: i * 0.1, duration: 0.5}}
-                            className="flex-shrink-0 w-[320px] bg-white rounded-lg shadow-xl overflow-hidden group transform hover:-translate-y-2 transition-transform duration-300">
+                            className="flex-shrink-0 w-[280px] bg-white rounded-lg shadow-lg overflow-hidden group transform hover:-translate-y-1 transition-transform duration-300">
                                 <Link to={`/projects/${project._id}`} >
-                                    <div className="overflow-hidden h-60">
+                                    <div className="overflow-hidden h-52">
                                         <img src={project.images[0]} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
                                     </div>
-                                    <div className="p-6">
+                                    <div className="p-5">
                                         <p className="text-sm text-primary font-semibold">{project.category}</p>
-                                        <h3 className="text-xl font-bold text-gray-800 font-serif mt-1">{project.title}</h3>
+                                        <h3 className="text-lg font-bold text-gray-800 font-serif mt-1">{project.title}</h3>
                                     </div>
                                 </Link>
                             </motion.div>
                         ))}
                     </div>
-                    <button onClick={() => scroll('left')} className="hidden md:flex absolute top-1/2 -left-5 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm p-3 rounded-full shadow-lg hover:bg-white transition-all z-10 text-primary"><ChevronLeft size={24}/></button>
-                    <button onClick={() => scroll('right')} className="hidden md:flex absolute top-1/2 -right-5 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm p-3 rounded-full shadow-lg hover:bg-white transition-all z-10 text-primary"><ChevronRight size={24}/></button>
+                    <button onClick={() => scroll('left')} className="hidden md:flex absolute top-1/2 -left-4 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-lg hover:bg-white transition-all z-10 text-primary"><ChevronLeft size={22}/></button>
+                    <button onClick={() => scroll('right')} className="hidden md:flex absolute top-1/2 -right-4 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-lg hover:bg-white transition-all z-10 text-primary"><ChevronRight size={22}/></button>
                 </div>
             </div>
       </motion.section>
@@ -167,6 +168,9 @@ const Home = () => {
           </div>
         </div>
       </motion.section>
+
+      {/* Recent Reviews Section */}
+      <RecentReviews />
 
       {/* CTA Section */}
        <motion.section 

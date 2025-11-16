@@ -2,14 +2,11 @@ require('dotenv').config({ path: './.env' });
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
-const seedAdmin = require('./utils/seedAdmin');
+const seedAdmin = require('./scripts/seedAdmin');
 
 const authRoutes = require('./routes/auth');
-const projectRoutes = require('./routes/projects');
-const faqRoutes = require('./routes/faqs');
-const reviewRoutes = require('./routes/reviews');
 const uploadRoutes = require('./routes/upload');
-const sliderRoutes = require('./routes/slider'); // Add this line
+const apiRoutes = require('./routes/api');
 
 const app = express();
 
@@ -24,11 +21,8 @@ connectDB()
   .catch((err) => console.error('DB connect error', err));
 
 app.use('/api/auth', authRoutes);
-app.use('/api/projects', projectRoutes);
-app.use('/api/faqs', faqRoutes);
-app.use('/api/reviews', reviewRoutes);
 app.use('/api/upload', uploadRoutes);
-app.use('/api/slider', sliderRoutes); // Add this line
+app.use('/api', apiRoutes);
 
 app.get('/api/ping', (req, res) => res.json({ ok: true }));
 

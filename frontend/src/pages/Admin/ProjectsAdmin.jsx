@@ -1,158 +1,100 @@
-import React, { useEffect, useState } from "react";
-import API from "../../api/api";
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { PlusCircle, Edit, Trash2 } from 'lucide-react';
+import ProjectForm from '@/components/Admin/ProjectForm';
 
-export default function ProjectsAdmin() {
+const ProjectsAdmin = () => {
   const [projects, setProjects] = useState([]);
-  const [modal, setModal] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const token = localStorage.getItem('token');
 
-  const [form, setForm] = useState({
-    title: "",
-    category: "Kitchens",
-    description: "",
-    imageUrl: "",
-  });
+  useEffect(() => {
+    const fetchProjects = async () => {
+      const response = await fetch('/api/projects');
+      const data = await response.json();
+      setProjects(data);
+    };
+    fetchProjects();
+  }, []);
 
-  const load = () => {
-    API.get("/projects").then((r) => setProjects(r.data)).catch(()=>{});
+  const handleAdd = () => {
+    setSelectedProject(null);
+    setIsFormOpen(true);
   };
 
-  useEffect(() => load(), []);
+  const handleEdit = (project) => {
+    setSelectedProject(project);
+    setIsFormOpen(true);
+  };
 
-  const handleUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const data = new FormData();
-    data.append("image", file);
+  const handleDelete = async (id) => {
+    await fetch(`/api/projects/${id}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+    setProjects(projects.filter(p => p._id !== id));
+  };
 
-    const res = await API.post("/upload/image", data, {
-      headers: { "Content-Type": "multipart/form-data" },
+  const handleFormSubmit = async (projectData) => {
+    const formData = new FormData();
+    Object.keys(projectData).forEach(key => {
+      formData.append(key, projectData[key]);
     });
 
-    setForm({ ...form, imageUrl: res.data.secure_url || res.data.url || res.data.path || res.data });
-  };
-
-  const saveProject = async () => {
-    setLoading(true);
-
-    if (form._id) {
-      await API.put(`/projects/${form._id}`, form);
+    if (selectedProject) {
+      const response = await fetch(`/api/projects/${selectedProject._id}`, {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData,
+      });
+      const updatedProject = await response.json();
+      setProjects(projects.map(p => p._id === selectedProject._id ? updatedProject : p));
     } else {
-      await API.post("/projects", form);
+      const response = await fetch('/api/projects', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData,
+      });
+      const newProject = await response.json();
+      setProjects([...projects, newProject]);
     }
-
-    setLoading(false);
-    setModal(false);
-    setForm({ title: "", category: "Kitchens", description: "", imageUrl: "" });
-    load();
-  };
-
-  const editProject = (p) => {
-    setForm(p);
-    setModal(true);
-  };
-
-  const deleteProject = async (id) => {
-    if (!confirm("Delete project?")) return;
-    await API.delete(`/projects/${id}`);
-    load();
+    setIsFormOpen(false);
   };
 
   return (
-    <div>
-      <div className="flex justify-between mb-6">
-        <h2 className="text-2xl font-bold">Manage Projects</h2>
-        <button
-          onClick={() => {
-            setForm({ title: "", category: "Kitchens", description: "", imageUrl: "" });
-            setModal(true);
-          }}
-          className="px-4 py-2 bg-brand text-white rounded"
-        >
-          + Add Project
-        </button>
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Manage Projects</h1>
+        <Button onClick={handleAdd}><PlusCircle className="h-4 w-4 mr-2" /> Add Project</Button>
       </div>
 
-      {/* TABLE */}
-      <table className="w-full bg-white shadow rounded overflow-hidden">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="p-3">Image</th>
-            <th className="p-3">Title</th>
-            <th className="p-3">Category</th>
-            <th className="p-3">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {projects.map((p) => (
-            <tr key={p._id} className="border-t">
-              <td className="p-3">
-                <img src={p.imageUrl} className="w-20 h-14 object-cover rounded" alt="" />
-              </td>
-              <td className="p-3">{p.title}</td>
-              <td className="p-3">{p.category}</td>
-              <td className="p-3 space-x-3">
-                <button className="text-blue-600" onClick={() => editProject(p)}>
-                  Edit
-                </button>
-                <button className="text-red-600" onClick={() => deleteProject(p._id)}>
-                  Delete
-                </button>
-              </td>
-            </tr>
+      {isFormOpen ? (
+        <ProjectForm project={selectedProject} onSubmit={handleFormSubmit} onCancel={() => setIsFormOpen(false)} />
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {projects.map(project => (
+            <Card key={project._id}>
+              <img src={project.imageUrl} alt={project.title} className="rounded-t-lg w-full h-48 object-cover" />
+              <CardHeader>
+                <CardTitle className="flex justify-between items-center">
+                  {project.title}
+                  <div className="flex space-x-2">
+                    <Button size="sm" variant="outline" onClick={() => handleEdit(project)}><Edit className="h-4 w-4" /></Button>
+                    <Button size="sm" variant="destructive" onClick={() => handleDelete(project._id)}><Trash2 className="h-4 w-4" /></Button>
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600 line-clamp-2">{project.description}</p>
+              </CardContent>
+            </Card>
           ))}
-        </tbody>
-      </table>
-
-      {/* MODAL */}
-      {modal && (
-        <div className="fixed inset-0 bg-black/40 flex justify-center items-center">
-          <div className="bg-white p-6 rounded w-96 shadow-lg">
-            <h3 className="text-xl font-bold mb-4">{form._id ? "Edit" : "Add"} Project</h3>
-
-            <input
-              placeholder="Title"
-              className="border p-2 w-full mb-3 rounded"
-              value={form.title}
-              onChange={(e) => setForm({ ...form, title: e.target.value })}
-            />
-
-            <select
-              className="border p-2 w-full mb-3 rounded"
-              value={form.category}
-              onChange={(e) => setForm({ ...form, category: e.target.value })}
-            >
-              <option>Kitchens</option>
-              <option>Wardrobes</option>
-              <option>Partitions</option>
-              <option>Windows</option>
-            </select>
-
-            <textarea
-              className="border p-2 w-full mb-3 rounded"
-              rows={3}
-              placeholder="Description"
-              value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
-            ></textarea>
-
-            {/* IMAGE UPLOAD */}
-            <input type="file" className="mb-3" onChange={handleUpload} />
-            {form.imageUrl && <img src={form.imageUrl} className="w-full h-40 object-cover rounded" alt="" />}
-
-            <div className="flex justify-end mt-4 gap-3">
-              <button onClick={() => setModal(false)}>Cancel</button>
-              <button
-                className="px-4 py-2 bg-brand text-white rounded"
-                onClick={saveProject}
-                disabled={loading}
-              >
-                {loading ? "Saving..." : "Save"}
-              </button>
-            </div>
-          </div>
         </div>
       )}
     </div>
   );
-}
+};
+
+export default ProjectsAdmin;

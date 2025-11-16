@@ -1,57 +1,75 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
 // Components
-import ModernNavbar from './components/ModernNavbar';
+import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import ModernFooter from './components/ModernFooter';
+import AdminLayout from './components/Admin/AdminLayout';
+import ProtectedRoute from './components/Admin/ProtectedRoute';
 
 // Pages
 import Home from './pages/Home';
-import Showroom from './pages/Showroom';
 import Projects from './pages/Projects';
 import ProjectDetail from './pages/ProjectDetail';
 import BookCall from './pages/BookCall';
 import Reviews from './pages/Reviews';
 import FAQ from './pages/FAQ';
+import About from './pages/About';
+import Login from './pages/Admin/Login';
 
 // Admin Pages
-import AdminLogin from './pages/Auth/AdminLogin';
-import AdminDashboard from './pages/Admin/AdminDashboard';
+import AdminDashboard from './pages/Admin';
 import ProjectsAdmin from './pages/Admin/ProjectsAdmin';
 import ReviewsAdmin from './pages/Admin/ReviewsAdmin';
-import FaqAdmin from './pages/Admin/FaqAdmin';
-import SliderAdmin from './pages/Admin/SliderAdmin';
 
 // CSS
 import './styles/index.css';
 
-function App() {
+const App = () => {
   return (
     <Router>
-      <ModernNavbar />
-      <main className="pt-20"> {/* Add padding-top to account for fixed navbar */}
+      <MainContent />
+    </Router>
+  );
+}
+
+const MainContent = () => {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
+
+  return (
+    <>
+      {!isAdminRoute && <Navbar />}
+      <main>
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<Home />} />
-          <Route path="/showroom" element={<Showroom />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/projects/:id" element={<ProjectDetail />} />
           <Route path="/book-call" element={<BookCall />} />
           <Route path="/reviews" element={<Reviews />} />
           <Route path="/faq" element={<FAQ />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/admin/login" element={<Login />} />
 
           {/* Admin Routes */}
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/admin/projects" element={<ProjectsAdmin />} />
-          <Route path="/admin/reviews" element={<ReviewsAdmin />} />
-          <Route path="/admin/faq" element={<FaqAdmin />} />
-          <Route path="/admin/slider" element={<SliderAdmin />} />
+          <Route 
+            path="/admin" 
+            element={
+              <ProtectedRoute>
+                <AdminLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<AdminDashboard />} />
+            <Route path="projects" element={<ProjectsAdmin />} />
+            <Route path="reviews" element={<ReviewsAdmin />} />
+          </Route>
         </Routes>
       </main>
-      <ModernFooter />
-    </Router>
+      {!isAdminRoute && <Footer />}
+    </>
   );
-}
+};
 
 export default App;

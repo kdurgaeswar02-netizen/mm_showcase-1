@@ -41,15 +41,14 @@ const ProjectDetail = () => {
 
     return (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.7 }}>
-            {/* Banner Section */}
-            <div className="h-[60vh] md:h-[70vh] w-full relative overflow-hidden">
-                <img src={project.images[0]} alt={project.title} className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+            {/* Title Section */}
+            <div className="bg-gray-100 py-12 md:py-16">
+                <div className="container mx-auto px-6">
                     <motion.h1 
                         initial={{ y: 50, opacity: 0 }} 
                         animate={{ y: 0, opacity: 1 }} 
                         transition={{ duration: 0.8, delay: 0.2 }}
-                        className="text-4xl md:text-6xl font-bold text-white font-display text-center p-4">
+                        className="text-4xl md:text-6xl font-bold text-primary font-display text-center p-4">
                         {project.title}
                     </motion.h1>
                 </div>
@@ -121,7 +120,7 @@ const ProjectDetail = () => {
             {project.youtubeUrl && (
                 <motion.div initial={{opacity: 0, y: 50}} whileInView={{opacity: 1, y: 0}} viewport={{once: true}} transition={{duration: 0.8}} className="container mx-auto px-6 py-12">
                     <h2 className="text-3xl font-bold text-primary font-serif mb-6 text-center">Walkthrough</h2>
-                    <div className="aspect-w-16 aspect-h-9 rounded-xl overflow-hidden shadow-2xl mx-auto max-w-4xl">
+                    <div className="aspect-w-16 aspect-h-9 rounded-xl overflow-hidden shadow-2xl mx-auto max-w-2xl">
                         <iframe
                             src={project.youtubeUrl}
                             title="Project YouTube Video"
