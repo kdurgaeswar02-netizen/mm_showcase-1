@@ -1,29 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
-
-const dummyFaqs = [
-  {
-    question: 'What types of interior services do you offer?',
-    answer: 'We specialize in premium aluminum interiors, including modular kitchens, wardrobes, partitions, windows, and false ceilings. We handle everything from design to installation.'
-  },
-  {
-    question: 'What is the typical timeline for a project?',
-    answer: 'A typical residential project can take anywhere from 4 to 8 weeks, depending on the scope and complexity. Commercial projects have a more varied timeline, which we establish and agree upon before starting.'
-  },
-  {
-    question: 'Do you provide a warranty for your work?',
-    answer: 'Yes, all our workmanship and materials come with a comprehensive warranty. The specific terms and duration depend on the products used, and we provide all warranty details in our project agreement.'
-  },
-  {
-    question: 'Can I see samples of the materials you use?',
-    answer: 'Absolutely! We encourage you to visit our showroom to see and feel the high-quality materials, finishes, and hardware we use. You can also see completed projects in our portfolio.'
-  },
-  {
-    question: 'How do I get a quote for my project?',
-    answer: 'You can start by booking a free consultation call with us through our website. We will discuss your requirements, and our team will then prepare a detailed, no-obligation quote for your project.'
-  }
-];
+import axios from 'axios';
 
 const AccordionItem = ({ faq, isOpen, onClick }) => {
   return (
@@ -52,10 +30,37 @@ const AccordionItem = ({ faq, isOpen, onClick }) => {
 
 const FAQ = () => {
   const [openFaq, setOpenFaq] = useState(null);
+  const [faqs, setFaqs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchFaqs = async () => {
+      try {
+        const response = await axios.get('/api/faqs');
+        setFaqs(response.data);
+      } catch (err) {
+        setError('Error fetching FAQs. Please try again later.');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFaqs();
+  }, []);
 
   const handleFaqClick = (index) => {
     setOpenFaq(openFaq === index ? null : index);
   };
+
+  if (loading) {
+    return <div className="text-center p-8">Loading FAQs...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center p-8 text-red-500">{error}</div>;
+  }
 
   return (
     <div className="container mx-auto px-6 py-12 animate-fade-in">
@@ -65,9 +70,9 @@ const FAQ = () => {
       </motion.div>
 
       <div className="max-w-3xl mx-auto">
-        {dummyFaqs.map((faq, index) => (
+        {faqs.map((faq, index) => (
           <AccordionItem 
-            key={index} 
+            key={faq._id} 
             faq={faq} 
             isOpen={openFaq === index} 
             onClick={() => handleFaqClick(index)} 

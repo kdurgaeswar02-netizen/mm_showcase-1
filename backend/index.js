@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ path: './.env' });
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
@@ -9,6 +9,7 @@ const projectRoutes = require('./routes/projects');
 const faqRoutes = require('./routes/faqs');
 const reviewRoutes = require('./routes/reviews');
 const uploadRoutes = require('./routes/upload');
+const sliderRoutes = require('./routes/slider'); // Add this line
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use('/api/projects', projectRoutes);
 app.use('/api/faqs', faqRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/slider', sliderRoutes); // Add this line
 
 app.get('/api/ping', (req, res) => res.json({ ok: true }));
 

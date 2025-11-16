@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const Admin = require('../models/Admin');
 const bcrypt = require('bcryptjs');
 
 module.exports = async function seedAdmin() {
@@ -6,14 +6,15 @@ module.exports = async function seedAdmin() {
     const email = process.env.ADMIN_EMAIL;
     const pass = process.env.ADMIN_PASSWORD;
     if (!email || !pass) return;
-    let user = await User.findOne({ email });
-    if (!user) {
-      const hash = await bcrypt.hash(pass, 10);
-      user = new User({ email, passwordHash: hash, role: 'admin' });
-      await user.save();
+    let admin = await Admin.findOne({ email });
+    const hash = await bcrypt.hash(pass, 10);
+    if (!admin) {
+      admin = new Admin({ email, passwordHash: hash });
+      await admin.save();
       console.log('Admin seeded:', email);
     } else {
-      console.log('Admin exists');
+        await Admin.updateOne({ email }, { $set: { passwordHash: hash } });
+        console.log('Admin password updated for:', email);
     }
   } catch (err) {
     console.error('seed admin err', err);

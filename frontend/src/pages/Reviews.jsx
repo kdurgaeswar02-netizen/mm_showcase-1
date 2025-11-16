@@ -1,46 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Star, ThumbsUp } from 'lucide-react';
-
-const dummyReviews = [
-  {
-    _id: '1',
-    name: 'Anjali & Rohan S.',
-    city: 'Mumbai',
-    rating: 5,
-    text: 'M&M completely transformed our kitchen! The team was professional, the quality is top-notch, and the result is beyond our wildest dreams. We get so many compliments!',
-    youtubeUrl: null
-  },
-  {
-    _id: '2',
-    name: 'Vikram Desai',
-    city: 'Pune',
-    rating: 5,
-    text: 'Working with M&M was a breeze. They understood my vision for a modern, minimalist office space and executed it perfectly. Highly recommend their services.',
-    youtubeUrl: 'https://www.youtube.com/embed/VIDEO_ID_1' // Replace with actual video ID
-  },
-  {
-    _id: '3',
-    name: 'Priya Mehta',
-    city: 'Mumbai',
-    rating: 4,
-    text: 'The aluminum partitions for our office are sleek and functional. The installation was quick and clean. A great experience overall.',
-    youtubeUrl: null
-  },
-  {
-    _id: '4', name: 'Sunita Patil', city: 'Nagpur', rating: 5, text: 'Our new modular wardrobe is fantastic. So much storage and it looks so elegant. The design team was very helpful.', youtubeUrl: null
-  },
-  {
-    _id: '5',
-    name: 'R-Cube Technologies',
-    city: 'Bangalore',
-    rating: 5,
-    text: 'The best in the business for commercial interiors. They delivered our project on time and within budget, with exceptional quality.',
-    youtubeUrl: 'https://www.youtube.com/embed/VIDEO_ID_2' // Replace with actual video ID
-  }
-];
+import axios from 'axios';
 
 const Reviews = () => {
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const response = await axios.get('/api/reviews');
+        setReviews(response.data);
+      } catch (err) {
+        setError('Error fetching reviews. Please try again later.');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReviews();
+  }, []);
 
   const renderStars = (rating) => {
     const stars = [];
@@ -50,6 +32,14 @@ const Reviews = () => {
     return <div className="flex items-center gap-1">{stars}</div>;
   };
 
+  if (loading) {
+    return <div className="text-center p-8">Loading reviews...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center p-8 text-red-500">{error}</div>;
+  }
+
   return (
     <div className="container mx-auto px-6 py-12 animate-fade-in">
       <motion.div initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }}>
@@ -58,7 +48,7 @@ const Reviews = () => {
       </motion.div>
 
       <div className="columns-1 sm:columns-2 lg:columns-3 gap-8 space-y-8">
-        {dummyReviews.map((review, index) => (
+        {reviews.map((review, index) => (
             <motion.div 
                 key={review._id}
                 initial={{ opacity: 0, y: 50 }}
@@ -89,13 +79,12 @@ const Reviews = () => {
                         <ThumbsUp size={24} />
                     </div>
                     <div>
-                        <p className="text-gray-700 leading-snug">"{review.text}"</p>
+                        <p className="text-gray-700 leading-snug">\"{review.comment}\"</p>
                         <div className="mt-4 flex items-center justify-between">
                             <div>
-                                <p className="font-bold text-gray-800">{review.name}</p>
-                                <p className="text-sm text-gray-500">{review.city}</p>
+                                <p className="font-bold text-gray-800">{review.author}</p>
                             </div>
-                           {renderStars(review.rating)}
+                           {renderStars(5)}
                         </div>
                     </div>
                 </div>

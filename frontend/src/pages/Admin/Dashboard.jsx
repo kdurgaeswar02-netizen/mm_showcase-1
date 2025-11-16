@@ -9,9 +9,18 @@ export default function Dashboard() {
         <h2 className="text-2xl font-bold mb-6">Admin Panel</h2>
 
         <nav className="space-y-3">
-          <Link className="block py-2 px-3 rounded hover:bg-gray-200" to="projects">Projects</Link>
-          <Link className="block py-2 px-3 rounded hover:bg-gray-200" to="faqs">FAQs</Link>
-          <Link className="block py-2 px-3 rounded hover:bg-gray-200" to="reviews">Reviews</Link>
+          <Link className="block py-2 px-3 rounded hover:bg-gray-200" to="projects">
+            Manage Projects
+          </Link>
+          <Link className="block py-2 px-3 rounded hover:bg-gray-200" to="faqs">
+            Manage FAQs
+          </Link>
+          <Link className="block py-2 px-3 rounded hover:bg-gray-200" to="reviews">
+            Manage Reviews
+          </Link>
+          <Link className="block py-2 px-3 rounded hover:bg-gray-200" to="slider">
+            Manage Home Slider
+          </Link>
         </nav>
       </aside>
 
