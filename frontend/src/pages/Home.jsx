@@ -1,23 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, ChevronLeft, ChevronRight, Zap, Award, Shield } from 'lucide-react';
 import RecentReviews from '../components/RecentReviews';
-
-// Mock data - replace with API calls
-const projects = [
-  { _id: 1, title: 'Modern Kitchen', category: 'Kitchens', images: ['/placeholder-1.jpg'] },
-  { _id: 2, title: 'Spacious Wardrobe', category: 'Wardrobes', images: ['/placeholder-2.jpg'] },
-  { _id: 3, title: 'Office Partition', category: 'Partitions', images: ['/placeholder-3.jpg'] },
-  { _id: 4, title: 'Living Room', category: 'Living', images: ['/placeholder-4.jpg'] },
-  { _id: 5, title: 'Minimalist Bedroom', category: 'Bedroom', images: ['/placeholder-5.jpg'] },
-];
+import API from '../api/api';
 
 const categories = [
-  { name: 'Hall', image: '/category-1.jpg' },
-  { name: 'Kitchen', image: '/category-2.jpg' },
-  { name: 'TV Units', image: '/category-3.jpg' },
-  { name: 'All kind of Aluminium Works', image: '/category-4.jpg' },
+  { name: 'Hall', image: '/hall.png' },
+  { name: 'Kitchen', image: '/kitchen.png' },
+  { name: 'TV Units', image: '/tv-unit.png' },
+  { name: 'All kind of Aluminium Works', image: '/partition.png' },
 ];
 
 const features = [
@@ -27,6 +19,19 @@ const features = [
 ]
 
 const Home = () => {
+  const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await API.get('/projects');
+        setProjects(response.data.slice(0, 5)); // Get first 5 projects
+      } catch (error) {
+        console.error("Failed to fetch projects:", error);
+      }
+    };
+    fetchProjects();
+  }, []);
 
   const sectionVariants = {
     hidden: { opacity: 0, y: 50 },
@@ -65,13 +70,7 @@ const Home = () => {
             Premium aluminum interiors for modern living. From bespoke kitchens to elegant office partitions, we bring your vision to life with precision and style.
           </motion.p>
           <motion.div 
-            initial={{y: 20, opacity: 0}} animate={{y: 0, opacity: 1}} transition={{delay: 0.6, duration: 0.5}}
-            className="flex flex-col sm:flex-row justify-end items-end sm:items-center gap-4">
-            <Link to="/showroom">
-              <button className="bg-primary text-white px-8 py-3 rounded-md font-semibold hover:scale-105 transition-transform duration-300 flex items-center gap-2 text-lg shadow-lg">
-                Explore Showroom <ArrowRight size={20}/>
-              </button>
-            </Link>
+            initial={{y: 20, opacity: 0}} animate={{y: 0, opacity: 1}} transition={{delay: 0.6, duration: 0.5}}>
             <Link to="/projects">
               <button className="bg-white/90 text-primary px-8 py-3 rounded-md font-semibold hover:scale-105 transition-transform duration-300 border border-transparent hover:bg-white text-lg shadow-lg">
                 View Projects
@@ -162,7 +161,6 @@ const Home = () => {
                  <div className="absolute inset-0 bg-black/40 flex items-end p-4">
                     <h3 className="text-white text-xl md:text-2xl font-bold font-display">{cat.name}</h3>
                  </div>
-                 <Link to="/showroom" className="absolute inset-0"/>
               </motion.div>
             ))}
           </div>

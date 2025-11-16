@@ -5,7 +5,8 @@ const projectSchema = new mongoose.Schema({
   description: String,
   images: [String],
   category: String,
-  createdAt: { type: Date, default: Date.now }
+  location: String,
+  price: String
 }, { timestamps: true });
 
 module.exports = mongoose.model('Project', projectSchema);

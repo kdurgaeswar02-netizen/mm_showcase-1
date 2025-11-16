@@ -1,4 +1,7 @@
+
 const Project = require('../models/Project');
+const cloudinary = require('../config/cloudinary');
+const streamifier = require('streamifier');
 
 exports.list = async (req, res) => {
   const projects = await Project.find().sort({ createdAt: -1 });
@@ -12,14 +15,53 @@ exports.get = async (req, res) => {
 };
 
 exports.create = async (req, res) => {
-  const doc = new Project(req.body);
-  await doc.save();
-  res.json(doc);
+  try {
+    const projectData = { ...req.body };
+
+    if (req.file) {
+      const result = await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream({ folder: 'mm_showcase' }, (error, result) => {
+          if (error) return reject(error);
+          resolve(result);
+        });
+        streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
+      });
+      projectData.images = [result.secure_url];
+    }
+
+    const doc = new Project(projectData);
+    await doc.save();
+    res.status(201).json(doc);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
 };
 
 exports.update = async (req, res) => {
-  const doc = await Project.findByIdAndUpdate(req.params.id, req.body, { new: true });
-  res.json(doc);
+  try {
+    const dataToUpdate = { ...req.body };
+
+    if (req.file) {
+      const result = await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream({ folder: 'mm_showcase' }, (error, result) => {
+          if (error) return reject(error);
+          resolve(result);
+        });
+        streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
+      });
+      dataToUpdate.images = [result.secure_url];
+    }
+
+    const doc = await Project.findByIdAndUpdate(req.params.id, dataToUpdate, { new: true });
+    if (!doc) {
+      return res.status(404).json({ message: 'Project not found' });
+    }
+    res.json(doc);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
 };
 
 exports.remove = async (req, res) => {

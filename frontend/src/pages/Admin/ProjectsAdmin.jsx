@@ -10,12 +10,14 @@ const ProjectsAdmin = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const token = localStorage.getItem('token');
 
+  const fetchProjects = async () => {
+    // Add cache-busting parameter
+    const response = await fetch(`/api/projects?_=${new Date().getTime()}`);
+    const data = await response.json();
+    setProjects(data);
+  };
+
   useEffect(() => {
-    const fetchProjects = async () => {
-      const response = await fetch('/api/projects');
-      const data = await response.json();
-      setProjects(data);
-    };
     fetchProjects();
   }, []);
 
@@ -30,37 +32,55 @@ const ProjectsAdmin = () => {
   };
 
   const handleDelete = async (id) => {
-    await fetch(`/api/projects/${id}`, {
-      method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${token}` },
-    });
-    setProjects(projects.filter(p => p._id !== id));
+    if (window.confirm('Are you sure you want to delete this project?')) {
+      await fetch(`/api/projects/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      setProjects(projects.filter(p => p._id !== id));
+    }
   };
 
   const handleFormSubmit = async (projectData) => {
     const formData = new FormData();
-    Object.keys(projectData).forEach(key => {
-      formData.append(key, projectData[key]);
-    });
-
-    if (selectedProject) {
-      const response = await fetch(`/api/projects/${selectedProject._id}`, {
-        method: 'PUT',
-        headers: { 'Authorization': `Bearer ${token}` },
-        body: formData,
-      });
-      const updatedProject = await response.json();
-      setProjects(projects.map(p => p._id === selectedProject._id ? updatedProject : p));
-    } else {
-      const response = await fetch('/api/projects', {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` },
-        body: formData,
-      });
-      const newProject = await response.json();
-      setProjects([...projects, newProject]);
+    if (projectData.image) {
+      formData.append('image', projectData.image);
     }
-    setIsFormOpen(false);
+    formData.append('title', projectData.title);
+    formData.append('description', projectData.description);
+    formData.append('location', projectData.location); // Added location
+    formData.append('price', projectData.price);       // Added price
+    
+    const isUpdate = !!selectedProject;
+    const url = isUpdate ? `/api/projects/${selectedProject._id}` : '/api/projects';
+    const method = isUpdate ? 'PUT' : 'POST';
+
+    try {
+        const response = await fetch(url, {
+            method,
+            headers: { 'Authorization': `Bearer ${token}` },
+            body: formData,
+        });
+
+        if (!response.ok) {
+            const err = await response.json();
+            throw new Error(err.message || 'Failed to save project');
+        }
+
+        const savedProject = await response.json();
+
+        if (isUpdate) {
+            setProjects(projects.map(p => p._id === savedProject._id ? savedProject : p));
+        } else {
+            setProjects([savedProject, ...projects]);
+        }
+
+        setIsFormOpen(false);
+        setSelectedProject(null);
+    } catch (error) {
+        console.error("Submission failed:", error);
+        alert(`Error: ${error.message}`);
+    }
   };
 
   return (
@@ -76,7 +96,7 @@ const ProjectsAdmin = () => {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {projects.map(project => (
             <Card key={project._id}>
-              <img src={project.imageUrl} alt={project.title} className="rounded-t-lg w-full h-48 object-cover" />
+              {project.imageUrl && <img src={project.imageUrl} alt={project.title} className="rounded-t-lg w-full h-48 object-cover" />}
               <CardHeader>
                 <CardTitle className="flex justify-between items-center">
                   {project.title}

@@ -7,11 +7,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "#1C1C1C",
-        text: "#F5E8D8",
-        primary: "#FF6F61",
-        secondary: "#DAA520",
-        accent: "#FF4500",
+        background: "#1A1A1A", // Deep Charcoal
+        text: "#B3B3B3",       // Metallic Silver
+        primary: "#007BFF",    // Electric Blue
+        secondary: "#E0E0E0",    // Light Grey
+        accent: "#FF4500",     // Keeping the old accent for now, can be changed.
       },
       fontFamily: {
         sans: ["Inter", "sans-serif"],

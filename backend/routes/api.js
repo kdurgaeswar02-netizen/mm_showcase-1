@@ -1,10 +1,13 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
 
 // CallRequest routes
 const { createCallRequest } = require('../controllers/callRequestController');
 const CallRequest = require('../models/CallRequest');
 const { authMiddleware } = require('../middleware/auth');
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 router.post('/calls', createCallRequest);
 
@@ -63,8 +66,8 @@ router.get('/projects', projectCtrl.list);
 router.get('/projects/:id', projectCtrl.get);
 
 // admin protected
-router.post('/projects', authMiddleware, projectCtrl.create);
-router.put('/projects/:id', authMiddleware, projectCtrl.update);
+router.post('/projects', authMiddleware, upload.single('image'), projectCtrl.create);
+router.put('/projects/:id', authMiddleware, upload.single('image'), projectCtrl.update);
 router.delete('/projects/:id', authMiddleware, projectCtrl.remove);
 
 // Review routes

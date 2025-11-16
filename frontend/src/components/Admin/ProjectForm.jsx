@@ -12,6 +12,8 @@ import { UploadCloud } from 'lucide-react';
 const projectSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   description: z.string().min(1, 'Description is required'),
+  location: z.string().min(1, 'Location is required'),
+  price: z.string().min(1, 'Price is required'),
 });
 
 const ProjectForm = ({ project, onSubmit, onCancel }) => {
@@ -20,7 +22,7 @@ const ProjectForm = ({ project, onSubmit, onCancel }) => {
 
   const form = useForm({
     resolver: zodResolver(projectSchema),
-    defaultValues: project || { title: '', description: '' },
+    defaultValues: project || { title: '', description: '', location: '', price: '' },
   });
 
   useEffect(() => {
@@ -61,7 +63,7 @@ const ProjectForm = ({ project, onSubmit, onCancel }) => {
                         <FormItem>
                         <FormLabel className="text-lg">Title</FormLabel>
                         <FormControl>
-                            <Input placeholder="e.g., Modern Kitchen Remodel" {...field} className="text-lg p-4"/>
+                            <Input placeholder="e.g., Modern Kitchen Remodel" {...field} className="text-lg p-4 bg-white text-black"/>
                         </FormControl>
                         <FormMessage />
                         </FormItem>
@@ -74,7 +76,33 @@ const ProjectForm = ({ project, onSubmit, onCancel }) => {
                         <FormItem>
                         <FormLabel className="text-lg">Description</FormLabel>
                         <FormControl>
-                            <Textarea placeholder="Describe the project details..." {...field} className="text-lg p-4" rows={5}/>
+                            <Textarea placeholder="Describe the project details..." {...field} className="text-lg p-4 bg-white text-black" rows={5}/>
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+                     <FormField
+                    control={form.control}
+                    name="location"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel className="text-lg">Location</FormLabel>
+                        <FormControl>
+                            <Input placeholder="e.g., San Francisco, CA" {...field} className="text-lg p-4 bg-white text-black"/>
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+                     <FormField
+                    control={form.control}
+                    name="price"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel className="text-lg">Price</FormLabel>
+                        <FormControl>
+                            <Input placeholder="e.g., $10,000 or contact for price" {...field} className="text-lg p-4 bg-white text-black"/>
                         </FormControl>
                         <FormMessage />
                         </FormItem>
@@ -91,10 +119,10 @@ const ProjectForm = ({ project, onSubmit, onCancel }) => {
                                         <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                             <UploadCloud className="w-10 h-10 mb-4 text-gray-500" />
                                             <p className="mb-2 text-sm text-gray-500"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-                                            <p className="text-xs text-gray-500">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                                            <p className="text-xs text-gray-500">SVG, PNG, JPG, JPEG or GIF (MAX. 800x400px)</p>
                                         </div>
                                     )}
-                                    <Input id="dropzone-file" type="file" className="hidden" onChange={handleImageChange} />
+                                    <Input id="dropzone-file" type="file" className="hidden" onChange={handleImageChange} accept="image/svg+xml, image/png, image/jpeg, image/gif" />
                                 </label>
                             </div> 
                         </FormControl>

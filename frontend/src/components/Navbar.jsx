@@ -7,26 +7,14 @@ const navLinks = [
   { name: 'Home', path: '/' },
   { name: 'Projects', path: '/projects' },
   { name: 'About Us', path: '/about' },
-  { name: 'Contact', path: '/contact' },
   { name: 'Admin', path: '/admin/login' },
 ];
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
 
   const toggleMenu = () => setIsOpen(!isOpen);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
 
   const mobileMenuVariants = {
     hidden: { x: '100%', opacity: 0 },
@@ -39,13 +27,15 @@ const Navbar = () => {
     visible: { opacity: 1, y: 0 },
   };
 
-
   return (
-    <header className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-black/80 backdrop-blur-xl shadow-md' : 'bg-transparent'}`}>
+    <header className="sticky top-0 z-50 bg-black shadow-md">
       <nav className="container mx-auto px-6 py-4">
         <div className="flex justify-between items-center">
-          <Link to="/">
-            <img src="/logo.jpeg" alt="M&M Interior Works" className="h-12 w-auto" />
+          <Link to="/" className="flex items-center space-x-3">
+            <img src="/logo.png" alt="M&M Interior Works Logo" className="h-12 w-auto" />
+            <span className="text-xl font-bold text-white">
+              M&M Interior Works
+            </span>
           </Link>
 
           {/* Desktop Menu */}
@@ -54,11 +44,7 @@ const Navbar = () => {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`px-4 py-2 rounded-md text-lg font-medium transition-colors duration-300 ${
-                  location.pathname === link.path
-                    ? 'text-primary'
-                    : isScrolled ? 'text-white hover:text-primary' : 'text-gray-700 hover:text-primary'
-                }`}
+                className="px-4 py-2 rounded-md text-lg font-medium text-white hover:text-gray-300 transition-colors duration-300"
               >
                 {link.name}
               </Link>
@@ -72,7 +58,7 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <div className="md:hidden">
-            <button onClick={toggleMenu} className="text-primary">
+            <button onClick={toggleMenu} className="text-white">
               <Menu size={28} />
             </button>
           </div>
@@ -91,10 +77,11 @@ const Navbar = () => {
           >
             <div className="container mx-auto px-6 py-4 h-full">
               <div className="flex justify-between items-center">
-                 <Link to="/" onClick={() => setIsOpen(false)}>
-                    <img src="/logo.jpeg" alt="M&M Interior Works" className="h-12 w-auto" />
+                 <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center space-x-3">
+                    <img src="/logo.png" alt="M&M Interior Works Logo" className="h-12 w-auto" />
+                    <span className="text-xl font-bold text-white">M&M Interior Works</span>
                  </Link>
-                <button onClick={toggleMenu} className="text-primary">
+                <button onClick={toggleMenu} className="text-white">
                   <X size={28} />
                 </button>
               </div>
@@ -108,9 +95,7 @@ const Navbar = () => {
                   <motion.div key={link.path} variants={navItemVariants}>
                     <Link
                       to={link.path}
-                      className={`text-3xl font-semibold transition-colors duration-300 ${
-                        location.pathname === link.path ? 'text-primary' : 'text-white hover:text-primary'
-                      }`}
+                      className="text-3xl font-semibold text-white hover:text-gray-300 transition-colors duration-300"
                       onClick={() => setIsOpen(false)}
                     >
                       {link.name}
