@@ -14,7 +14,7 @@ const ProjectDetail = () => {
         const fetchProject = async () => {
             try {
                 setLoading(true);
-                const response = await API.get(`/projects/${id}`);
+                const response = await API.get(`/api/projects/${id}`);
                 setProject(response.data);
                 setError(null);
             } catch (err) {
