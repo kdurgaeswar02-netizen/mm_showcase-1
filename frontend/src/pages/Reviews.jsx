@@ -17,7 +17,7 @@ const Reviews = () => {
 
   const fetchReviews = async () => {
     try {
-      const response = await API.get('/reviews');
+      const response = await API.get('/api/reviews');
       setReviews(response.data);
     } catch (err) {
       console.error('Error fetching reviews:', err);
