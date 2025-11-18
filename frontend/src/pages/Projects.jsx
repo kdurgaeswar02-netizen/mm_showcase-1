@@ -15,7 +15,7 @@ const Projects = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await API.get('/projects');
+        const response = await API.get('/api/projects');
         setAllProjects(response.data);
         setFilteredProjects(response.data);
       } catch (err) {
