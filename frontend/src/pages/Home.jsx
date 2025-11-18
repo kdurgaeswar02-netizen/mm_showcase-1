@@ -24,7 +24,7 @@ const Home = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await API.get('/projects');
+        const response = await API.get('/api/projects');
         setProjects(response.data.slice(0, 5)); // Get first 5 projects
       } catch (error) {
         console.error("Failed to fetch projects:", error);
