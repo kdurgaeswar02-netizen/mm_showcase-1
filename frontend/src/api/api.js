@@ -1,6 +1,6 @@
 import axios from 'axios';
 const API = axios.create({
-  baseURL: "https://mm-showcase.onrender.com", 
+  baseURL: "https://mm-showcase-1.onrender.com", 
 });
 
 API.interceptors.request.use((config) => {
