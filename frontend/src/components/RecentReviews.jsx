@@ -10,7 +10,7 @@ const RecentReviews = () => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await API.get('/reviews');
+        const response = await API.get('/api/reviews');
         setReviews(response.data.slice(0, 3));
       } catch (err) {
         console.error('Error fetching reviews:', err);
