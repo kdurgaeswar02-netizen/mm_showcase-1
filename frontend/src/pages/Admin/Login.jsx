@@ -8,10 +8,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Mail, Lock } from 'lucide-react';
+import { User, Lock } from 'lucide-react';
 
 const loginSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
+  username: z.string().min(1, { message: "Username is required" }),
   password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
@@ -20,8 +20,8 @@ const Login = () => {
   const form = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-        email: 'admin@test.com',
-        password: '123456'
+        username: 'admin',
+        password: 'password'
     }
   });
 
@@ -60,14 +60,14 @@ const Login = () => {
                 <form onSubmit={form.handleSubmit(handleLogin)} className="space-y-6">
                 <FormField
                     control={form.control}
-                    name="email"
+                    name="username"
                     render={({ field }) => (
                     <FormItem>
-                        <FormLabel className="text-gray-300">Email</FormLabel>
+                        <FormLabel className="text-gray-300">Username</FormLabel>
                         <FormControl>
                             <div className="relative">
-                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"/>
-                                <Input type="email" placeholder="admin@example.com" {...field} className="pl-10 bg-gray-700 border-gray-600 text-white focus:ring-primary focus:border-primary h-12"/>
+                                <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"/>
+                                <Input placeholder="admin" {...field} className="pl-10 bg-gray-700 border-gray-600 text-white focus:ring-primary focus:border-primary h-12"/>
                             </div>
                         </FormControl>
                         <FormMessage />

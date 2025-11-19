@@ -1,20 +1,18 @@
 const Admin = require('../models/Admin');
-const bcrypt = require('bcryptjs');
 
 module.exports = async function seedAdmin() {
   try {
-    const email = process.env.ADMIN_EMAIL;
-    const pass = process.env.ADMIN_PASSWORD;
-    if (!email || !pass) return;
-    let admin = await Admin.findOne({ email });
-    const hash = await bcrypt.hash(pass, 10);
+    const username = process.env.ADMIN_USERNAME || 'admin';
+    const password = process.env.ADMIN_PASSWORD || 'password';
+    if (!username || !password) return;
+    let admin = await Admin.findOne({ username });
     if (!admin) {
-      admin = new Admin({ email, passwordHash: hash });
+      admin = new Admin({ username, password });
       await admin.save();
-      console.log('Admin seeded:', email);
+      console.log('Admin seeded:', username);
     } else {
-        await Admin.updateOne({ email }, { $set: { passwordHash: hash } });
-        console.log('Admin password updated for:', email);
+        await Admin.updateOne({ username }, { $set: { password } });
+        console.log('Admin password updated for:', username);
     }
   } catch (err) {
     console.error('seed admin err', err);
