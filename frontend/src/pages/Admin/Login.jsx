@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -9,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { User, Lock } from 'lucide-react';
+import API from '../../api/api'; 
 
 const loginSchema = z.object({
   username: z.string().min(1, { message: "Username is required" }),
@@ -20,25 +20,21 @@ const Login = () => {
   const form = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-        username: 'admin',
-        password: 'password'
+        username: '', 
+        password: ''
     }
   });
 
   const handleLogin = async (values) => {
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
-      });
+      // ✅ USE API.post INSTEAD OF FETCH
+      // API.post automatically uses the Render URL we configured
+      const response = await API.post('/api/auth/login', values);
 
-      if (!response.ok) {
-        throw new Error('Login failed');
-      }
-
-      const { token } = await response.json();
-      localStorage.setItem('token', token);
+      // Axios returns the data inside response.data
+      const { token } = response.data;
+      
+      localStorage.setItem('mm_token', token); // Make sure key matches what api.js looks for ('mm_token')
       navigate('/admin');
     } catch (error) {
       console.error('Login failed', error);
