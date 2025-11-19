@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, ChevronLeft, ChevronRight, Zap, Award, Shield } from 'lucide-react';
 import RecentReviews from '../components/RecentReviews';
+import Testimonials from '../components/Testimonials';
 import API from '../api/api';
 
 const categories = [
@@ -61,7 +62,7 @@ const Home = () => {
         <div className="container mx-auto px-6 text-right z-10">
           <motion.h1 
             initial={{y: 20, opacity: 0}} animate={{y: 0, opacity: 1}} transition={{delay: 0.2, duration: 0.5}}
-            className="text-5xl md:text-7xl font-bold font-display text-white leading-tight mb-4 max-w-2xl ml-auto">
+            className="text-4xl md:text-6xl font-bold font-display text-white leading-tight mb-4 max-w-2xl ml-auto">
             Designing Dreams, Building Reality
           </motion.h1>
           <motion.p 
@@ -145,6 +146,8 @@ const Home = () => {
         </div>
        </motion.section>
 
+        <Testimonials />
+
       {/* Categories Section */}
       <motion.section 
         variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}
@@ -157,7 +160,7 @@ const Home = () => {
                 key={cat.name}
                 initial={{opacity: 0, scale: 0.9}} whileInView={{opacity: 1, scale: 1}} viewport={{ once: true }} transition={{delay: i * 0.1}}
                 className="relative aspect-square md:aspect-[3/4] rounded-xl overflow-hidden group shadow-lg">
-                 <img src={cat.image} alt={cat.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"/>
+                 <img src={cat.image} alt={cat.name} className="w-full h-full object-.cover group-hover:scale-110 transition-transform duration-500"/>
                  <div className="absolute inset-0 bg-black/40 flex items-end p-4">
                     <h3 className="text-white text-xl md:text-2xl font-bold font-display">{cat.name}</h3>
                  </div>

@@ -101,8 +101,8 @@ const ProjectsAdmin = () => {
                 <CardTitle className="flex justify-between items-center">
                   {project.title}
                   <div className="flex space-x-2">
-                    <Button size="sm" variant="outline" onClick={() => handleEdit(project)}><Edit className="h-4 w-4" /></Button>
-                    <Button size="sm" variant="destructive" onClick={() => handleDelete(project._id)}><Trash2 className="h-4 w-4" /></Button>
+                    <Button size="sm" variant="outline" onClick={() => handleEdit(project)} className="text-white"><Edit className="h-4 w-4" /></Button>
+                    <Button size="sm" variant="destructive" onClick={() => handleDelete(project._id)} className="text-white"><Trash2 className="h-4 w-4" /></Button>
                   </div>
                 </CardTitle>
               </CardHeader>

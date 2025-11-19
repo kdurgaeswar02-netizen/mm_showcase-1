@@ -7,16 +7,16 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "#1A1A1A", // Deep Charcoal
-        text: "#B3B3B3",       // Metallic Silver
-        primary: "#007BFF",    // Electric Blue
-        secondary: "#E0E0E0",    // Light Grey
-        accent: "#FF4500",     // Keeping the old accent for now, can be changed.
+        background: "#FFFFFF",      // White
+        text: "#1a202c",           // Dark Slate Gray
+        primary: "#192a56",       // Midnight Blue
+        secondary: "#f7fafc",       // Lighter Gray
+        accent: "#daa520",        // Goldenrod
       },
       fontFamily: {
-        sans: ["Inter", "sans-serif"],
-        serif: ["Satoshi", "serif"],
-        display: ["Urbanist", "sans-serif"],
+        sans: ["'Poppins'", "sans-serif"],
+        serif: ["'Lora'", "serif"],
+        display: ["'Poppins'", "sans-serif"],
       },
       animation: {
         "fade-in": "fadeIn 0.5s ease-in-out",

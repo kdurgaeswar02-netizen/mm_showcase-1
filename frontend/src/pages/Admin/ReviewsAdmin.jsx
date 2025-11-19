@@ -47,11 +47,11 @@ const ReviewsAdmin = () => {
                 {review.name}
                 <div className="flex space-x-2">
                   {!review.approved && (
-                    <Button size="sm" onClick={() => handleApprove(review._id)}>
+                    <Button size="sm" onClick={() => handleApprove(review._id)} className="text-white">
                       <CheckCircle className="h-4 w-4 mr-2" /> Approve
                     </Button>
                   )}
-                  <Button size="sm" variant="destructive" onClick={() => handleDelete(review._id)}>
+                  <Button size="sm" variant="destructive" onClick={() => handleDelete(review._id)} className="text-white">
                     <Trash2 className="h-4 w-4 mr-2" /> Delete
                   </Button>
                 </div>

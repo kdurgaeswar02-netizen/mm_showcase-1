@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent } from '@/components/ui/card';
+import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -46,59 +46,97 @@ const Login = () => {
     }
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1, 
+      transition: { staggerChildren: 0.3 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { y: 0, opacity: 1, transition: { type: 'spring' }  }
+  };
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900">
-      <div className="w-full max-w-md p-8 space-y-8">
-        <div className="text-center">
-            <img src="/logo.jpeg" alt="M&M Interior Works" className="mx-auto h-24 w-auto"/>
-            <h1 className="mt-6 text-4xl font-extrabold text-white">Admin Panel</h1>
-            <p className="mt-2 text-lg text-gray-400">Sign in to manage your projects</p>
+    <div className="flex min-h-screen font-sans">
+        <div className="hidden lg:flex w-1/2 bg-gray-100 items-center justify-center p-12">
+            <motion.div 
+                className="text-center"
+                initial={{ opacity: 0, scale: 0.9 }} 
+                animate={{ opacity: 1, scale: 1 }} 
+                transition={{ duration: 0.8 }}
+            >
+                <img src="/logo.png" alt="M&M Interior Works" className="mx-auto h-28 w-auto mb-8"/>
+                <h1 className="text-4xl font-bold text-black">Welcome to the Admin Panel</h1>
+                <p className="mt-4 text-lg text-gray-600">Manage your projects, clients, and content with ease.</p>
+            </motion.div>
         </div>
-        <Card className="bg-gray-800 border-gray-700 shadow-2xl shadow-primary/20">
-            <CardContent className="p-8">
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleLogin)} className="space-y-6">
-                <FormField
-                    control={form.control}
-                    name="username"
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel className="text-gray-300">Username</FormLabel>
-                        <FormControl>
-                            <div className="relative">
-                                <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"/>
-                                <Input placeholder="admin" {...field} className="pl-10 bg-gray-700 border-gray-600 text-white focus:ring-primary focus:border-primary h-12"/>
-                            </div>
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel className="text-gray-300">Password</FormLabel>
-                        <FormControl>
-                            <div className="relative">
-                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"/>
-                                <Input type="password" placeholder="********" {...field} className="pl-10 bg-gray-700 border-gray-600 text-white focus:ring-primary focus:border-primary h-12"/>
-                            </div>
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
-                {form.formState.errors.root && <FormMessage>{form.formState.errors.root.message}</FormMessage>}
-                <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white font-bold h-12 text-lg transition-all duration-300 transform hover:scale-105">
-                    Login
-                </Button>
-                </form>
-            </Form>
-            </CardContent>
-        </Card>
-      </div>
+        <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
+            <motion.div 
+                className="w-full max-w-md space-y-8"
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+            >
+                <motion.div className="text-center lg:hidden" variants={itemVariants}>
+                    <img src="/logo.png" alt="M&M Interior Works" className="mx-auto h-20 w-auto"/>
+                    <h1 className="mt-6 text-3xl font-bold text-black">Admin Panel</h1>
+                </motion.div>
+
+                <motion.div variants={itemVariants}>
+                    <h2 className="text-center text-2xl font-semibold text-gray-800">Sign in to your account</h2>
+                </motion.div>
+
+                <motion.div 
+                    className="p-8 border border-gray-200 rounded-2xl shadow-xl"
+                    variants={itemVariants}
+                >
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(handleLogin)} className="space-y-6">
+                    <FormField
+                        control={form.control}
+                        name="username"
+                        render={({ field }) => (
+                        <FormItem>
+                            <FormLabel className="text-gray-600">Username</FormLabel>
+                            <FormControl>
+                                <div className="relative">
+                                    <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"/>
+                                    <Input placeholder="Enter your username" {...field} className="pl-10 bg-gray-50 border-gray-300 text-black focus:ring-black focus:border-black h-12 rounded-lg"/>
+                                </div>
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                        <FormItem>
+                            <FormLabel className="text-gray-600">Password</FormLabel>
+                            <FormControl>
+                                <div className="relative">
+                                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"/>
+                                    <Input type="password" placeholder="Enter your password" {...field} className="pl-10 bg-gray-50 border-gray-300 text-black focus:ring-black focus:border-black h-12 rounded-lg"/>
+                                </div>
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )}
+                    />
+                    {form.formState.errors.root && <FormMessage className="text-red-500 text-center">{form.formState.errors.root.message}</FormMessage>}
+                    <Button type="submit" className="w-full bg-gradient-to-r from-gray-800 to-black text-white font-bold h-12 text-lg rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
+                        Login
+                    </Button>
+                    </form>
+                </Form>
+                </motion.div>
+                 <p className="text-center text-sm text-gray-500">© 2023 M&M Interior Works. All rights reserved.</p>
+            </motion.div>
+        </div>
     </div>
   );
 };
