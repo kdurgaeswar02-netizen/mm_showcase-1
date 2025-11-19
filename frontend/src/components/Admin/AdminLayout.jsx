@@ -13,7 +13,7 @@ const AdminLayout = () => {
   ];
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('mm_token');
     navigate('/');
   };
 
